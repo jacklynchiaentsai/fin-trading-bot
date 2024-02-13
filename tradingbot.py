@@ -7,6 +7,13 @@ from dotenv import load_dotenv
 import os
 from alpaca_trade_api import REST 
 from timedelta import Timedelta # easier to calculate difference between dates
+from finbert_utils import estimate_sentiment
+import sys
+from helpers import convert_date
+
+input_symbol = sys.argv[1]
+input_startdate = convert_date(sys.argv[2])
+input_enddate = convert_date(sys.argv[3])
 
 #loading credentials
 if "API_KEY" not in os.environ: # local retrieval of environment variables
@@ -50,36 +57,57 @@ class MLTrader(Strategy):
         news = self.api.get_news(symbol=self.symbol, start=three_days_prior, end=today)
         # formatting news
         news= [event.__dict__["_raw"]["headline"] for event in news]
-        return news
+        probability, sentiment = estimate_sentiment(news)
+        return probability, sentiment
 
     # runs every time we get new data
     def on_trading_iteration(self):
         cash, last_price, quantity = self.position_sizing()
+        probability, sentiment = self.get_sentiment()
+
         if cash > last_price: # ensuring not buying when we don't have cash
-            if self.last_trade == None:
-                news = self.get_news()
-                print(news)
+            if sentiment == 'positive' and probability > 0.999:
+                # close existing short positions
+                if self.last_trade == 'sell':
+                    self.sell_all()
+                #place buy order
                 order = self.create_order(
                     self.symbol,
                     quantity,
                     "buy", 
                     type="bracket", # setting floor and ceiling boundaries to sell
-                    take_profit_price = last_price * 1.20, # sell if profit is 20% 
+                    take_profit_price = last_price * 1.20, 
                     stop_loss_price= last_price * 0.95,
                 )
                 self.submit_order(order)
                 self.last_trade = "buy"
 
-start_date = datetime(2023, 12, 15)
-end_date = datetime(2023, 12, 31)
+            elif sentiment == 'negative' and probability > 0.999:
+                # close existing long positions
+                if self.last_trade == 'buy':
+                    self.sell_all()
+                # place sell order
+                order = self.create_order(
+                    self.symbol,
+                    quantity,
+                    "sell", 
+                    type="bracket", # setting floor and ceiling boundaries to sell
+                    take_profit_price = last_price * 0.8, # take it
+                    stop_loss_price= last_price * 1.05, # prevent future loss
+                )
+                self.submit_order(order)
+                self.last_trade = "sell"
+
+# start_date = datetime(2020, 1, 1)
+# end_date = datetime(2023, 12, 31)
 
 broker = Alpaca(ALPACA_CREDS)
-strategy = MLTrader(name='mlstrat', broker=broker, parameters={"symbol": "SPY", "cash_at_risk" : 0.5})
+strategy = MLTrader(name='mlstrat', broker=broker, parameters={"symbol": input_symbol, "cash_at_risk" : 0.5})
 
 #evalutate how well our bot performs
 strategy.backtest(
     YahooDataBacktesting,
-    start_date,
-    end_date,
-    parameters={"symbol": "SPY", "cash_at_risk" : 0.5}
+    input_startdate,
+    input_enddate,
+    parameters={"symbol": input_symbol, "cash_at_risk" : 0.5}
 ) 
