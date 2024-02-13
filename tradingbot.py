@@ -45,7 +45,7 @@ class MLTrader(Strategy):
         # format date as string for api
         return today.strftime('%Y-%m-%d'), three_days_prior.strftime('%Y-%m-%d')
 
-    def get_news(self):
+    def get_sentiment(self):
         today, three_days_prior = self.get_dates()
         news = self.api.get_news(symbol=self.symbol, start=three_days_prior, end=today)
         # formatting news
