@@ -18,7 +18,7 @@ def main():
     # Get user input for start date, end date, and symbol
     start_date = st.date_input("Select start date", pd.to_datetime('today') - pd.to_timedelta(365, unit='d'))
     end_date = st.date_input("Select end date", pd.to_datetime('today'))
-    symbol = st.selectbox("Select symbol", popular_symbols, index=popular_symbols.index("SPY"))
+    symbol = st.selectbox("Select stock index", popular_symbols, index=popular_symbols.index("SPY"))
 
     # Submit button to run tradingbot.py script
     if st.button("Run Trading Bot"):

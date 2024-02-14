@@ -33,7 +33,7 @@ ALPACA_CREDS = {
 # inherits from Strategy class
 class MLTrader(Strategy):
     # only runs once
-    def initialize(self, symbol:str="SPY", cash_at_risk: float=0.5):
+    def initialize(self, symbol:str, cash_at_risk: float=0.5):
         self.symbol = symbol
         self.sleeptime = "24H" # how frequently we're going to trade
         self.last_trade = None

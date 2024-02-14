@@ -1,0 +1,5 @@
+time,strategy,symbol,side,type,status,multiplier,time_in_force,asset.strike,asset.multiplier,asset.asset_type,price,filled_quantity,trade_cost
+2023-10-26 09:30:00-04:00,MLTrader,GOOGL,sell,market,new,1,gtc,0.0,1,stock,,,
+2023-10-26 09:30:00-04:00,MLTrader,GOOGL,sell,market,fill,1,gtc,0.0,1,stock,122.87999725341797,407.0,0.0
+2023-11-02 09:30:00-04:00,MLTrader,GOOGL,buy,limit,canceled,1,day,0.0,1,stock,,,
+2023-11-02 09:30:00-04:00,MLTrader,GOOGL,buy,stop,fill,1,day,0.0,1,stock,129.02399711608888,407.0,0.0
