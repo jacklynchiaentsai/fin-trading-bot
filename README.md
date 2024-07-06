@@ -1,5 +1,16 @@
-lumibot: easy algo trading framework
-https://lumibot.lumiwealth.com/getting_started.html
+# SentixTrade: Automatic AI Stock Trading Bot
+### driven by Machine Learning (Natural Language Engineering), Software Engineering, Financial Economics
+
+Running the application:
+- create a virtual environment: `python3 -m venv venv`
+- activate virtual environment: `source venv/bin/activate`
+- installing packages: `pip install -r requirements.txt`
+- create `.env` file with API keys from [Alpaca Trading API](https://alpaca.markets/):
+```
+API_KEY = 
+API_SECRET = 
+```
+- run application: `streamlit run app.py`
 
 Process:
 - building strategy structure
@@ -25,3 +36,4 @@ personal note:
 - paper trading doen't include commission and fees
 - short position: selling assets you don't own with the expctation of buying them back at a lower price (taking loans)
 - long position: buying assets with the expectation of selling them at a higher price later
+- [lumibot: easy algo trading framework](https://lumibot.lumiwealth.com/getting_started.html)
